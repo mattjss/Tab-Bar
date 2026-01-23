@@ -28,12 +28,22 @@ const tabs = [
   { id: 'menu', icon: icons.menu, label: 'Menu' },
 ];
 
-// Tab Button Component - matches Figma "Tabs" component
+// Menu items for flyout
+const menuItems = [
+  { id: 'home', label: 'Home', icon: icons.menuHome, shortcut: 'H' },
+  { id: 'move', label: 'Move', icon: icons.menuMove, shortcut: 'M' },
+  { id: 'activity', label: 'Activity', icon: icons.menuActivity, shortcut: 'A' },
+  { id: 'portfolio', label: 'Portfolio', icon: icons.menuPortfolio },
+  { id: 'documents', label: 'Documents', icon: icons.menuDocuments },
+];
+
+// Tab Button Component
 const TabButton = ({ icon, label, isHovered = false }) => {
   return (
     <div 
       className={`
         flex items-center justify-center p-[5.143px] rounded-[12px] size-[24px]
+        transition-colors duration-200
         ${isHovered ? 'bg-[#323232]' : ''}
       `}
     >
@@ -44,7 +54,7 @@ const TabButton = ({ icon, label, isHovered = false }) => {
   );
 };
 
-// App Icon Component - for the stacked app icons (Twitch, YouTube, Spotify)
+// App Icon Component
 const AppIcon = ({ icon, bgColor, marginLeft = 0 }) => {
   return (
     <div 
@@ -54,94 +64,89 @@ const AppIcon = ({ icon, bgColor, marginLeft = 0 }) => {
         marginLeft: `${marginLeft}px`,
       }}
     >
-      <div className="relative shrink-0 size-[16px]">
+      <div className="relative shrink-0 size-[12px]">
         <img alt="" className="block max-w-none size-full" src={icon} />
       </div>
     </div>
   );
 };
 
-// Menu flyout component
-const menuItems = [
-  { id: 'home', label: 'Home', icon: icons.menuHome, shortcut: 'H' },
-  { id: 'move', label: 'Move', icon: icons.menuMove, shortcut: 'M' },
-  { id: 'activity', label: 'Activity', icon: icons.menuActivity, shortcut: 'A' },
-  { id: 'portfolio', label: 'Portfolio', icon: icons.menuPortfolio },
-  { id: 'documents', label: 'Documents', icon: icons.menuDocuments },
-];
-
-const MenuFlyout = () => {
-  // Container animation - expands from button
-  const containerVariants = {
-    hidden: { 
-      opacity: 0, 
-      scale: 0.8,
-      y: 10,
-    },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      y: 0,
-      transition: {
-        duration: 0.4,
-        ease: [0.4, 0, 0.2, 1],
-        delayChildren: 0.1,
-        staggerChildren: 0.045,
-        staggerDirection: -1, // Bottom to top
-      }
-    },
-    exit: { 
-      opacity: 0, 
-      scale: 0.9,
-      y: 10,
-      transition: {
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
-        staggerChildren: 0.03,
-        staggerDirection: 1, // Top to bottom
-      }
-    }
-  };
-
-  // Individual menu item animation
-  const itemVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 10,
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.2,
-        ease: [0.4, 0, 0.2, 1],
-      }
-    },
-    exit: { 
-      opacity: 0, 
-      y: -10,
-      transition: {
-        duration: 0.15,
-        ease: [0.4, 0, 0.2, 1],
-      }
-    }
-  };
-
+// Menu Flyout Component
+const MenuFlyout = ({ hoveredItem, setHoveredItem }) => {
   return (
     <motion.div
-      className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#252727] p-[16px] rounded-[16px] pointer-events-auto"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      style={{ transformOrigin: 'bottom center' }}
+      className="absolute bottom-full left-1/2 mb-3 bg-[#252727] border border-solid border-[#323232] p-[12px] rounded-[16px]"
+      style={{ x: '-50%' }}
+      initial={{ 
+        opacity: 0, 
+        y: 20,
+        scale: 0.95,
+      }}
+      animate={{ 
+        opacity: 1, 
+        y: 0,
+        scale: 1,
+      }}
+      exit={{ 
+        opacity: 0, 
+        y: 10,
+        scale: 0.98,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 500,
+        damping: 30,
+        mass: 0.8,
+      }}
     >
-      <div className="flex flex-col gap-[16px]">
-        {menuItems.map((item, index) => (
+      <motion.div 
+        className="flex flex-col gap-[4px]"
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.035,
+              delayChildren: 0.05,
+            }
+          },
+          hidden: {
+            transition: {
+              staggerChildren: 0.02,
+              staggerDirection: -1,
+            }
+          }
+        }}
+      >
+        {menuItems.map((item) => (
           <motion.div
             key={item.id}
-            variants={itemVariants}
-            className="flex items-center justify-between p-[2px] rounded-[6px] w-[196px] cursor-pointer hover:bg-[#323232] transition-colors"
+            variants={{
+              hidden: { opacity: 0, x: -12, scale: 0.95 },
+              visible: { 
+                opacity: 1, 
+                x: 0, 
+                scale: 1,
+                transition: {
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 30,
+                }
+              }
+            }}
+            className={`flex items-center justify-between rounded-[6px] w-[216px] cursor-pointer transition-colors duration-150 ${
+              hoveredItem === item.id 
+                ? 'bg-[#2f2f2f] px-[12px] py-[8px]' 
+                : 'px-[12px] py-[8px]'
+            }`}
+            onMouseEnter={() => setHoveredItem(item.id)}
+            onMouseLeave={() => setHoveredItem(null)}
+            whileHover={{ 
+              x: 4,
+              transition: { type: "spring", stiffness: 400, damping: 25 }
+            }}
+            whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center gap-[4px]">
               <div className="relative shrink-0 size-[16px]">
@@ -160,7 +165,7 @@ const MenuFlyout = () => {
             )}
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
@@ -168,31 +173,12 @@ const MenuFlyout = () => {
 const TabBar = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [hoveredTab, setHoveredTab] = useState(null);
+  const [hoveredItem, setHoveredItem] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [showCircle, setShowCircle] = useState(false);
-  const menuRef = useRef(null);
-  const menuButtonRef = useRef(null);
+  const containerRef = useRef(null);
 
   const handleTabClick = (tabId) => {
-    if (isAnimating) return; // Prevent clicks during animation
-    
     if (tabId === 'menu') {
-      if (!isMenuOpen) {
-        // Opening animation
-        setShowCircle(true);
-        setIsAnimating(true);
-        setTimeout(() => setShowCircle(false), 300);
-        setTimeout(() => setIsAnimating(false), 700);
-      } else {
-        // Closing animation
-        setIsAnimating(true);
-        setTimeout(() => {
-          setShowCircle(true);
-          setTimeout(() => setShowCircle(false), 200);
-        }, 300);
-        setTimeout(() => setIsAnimating(false), 600);
-      }
       setIsMenuOpen(!isMenuOpen);
     } else {
       setActiveTab(tabId);
@@ -204,10 +190,8 @@ const TabBar = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isMenuOpen && 
-          menuRef.current && 
-          !menuRef.current.contains(event.target) &&
-          menuButtonRef.current &&
-          !menuButtonRef.current.contains(event.target)) {
+          containerRef.current && 
+          !containerRef.current.contains(event.target)) {
         setIsMenuOpen(false);
       }
     };
@@ -221,7 +205,6 @@ const TabBar = () => {
       {/* Apps Section */}
       <div className="bg-[#252727] border border-solid border-[#323232] content-stretch flex flex-col items-start p-[10px] relative rounded-[32px]">
         <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
-          {/* Overlapping app icons - CSS Grid with same cell positioning */}
           <div className="inline-grid grid-cols-[max-content] grid-rows-[max-content] items-start justify-items-start leading-[0] relative shrink-0">
             <AppIcon icon={icons.appPurple} bgColor="#7829df" marginLeft={0} />
             <AppIcon icon={icons.appRed} bgColor="#e00" marginLeft={13.71} />
@@ -233,19 +216,18 @@ const TabBar = () => {
         </div>
       </div>
 
-      {/* Main Navigation Tabs */}
-      <div className="relative" ref={menuRef}>
+      {/* Main Navigation Tabs - Fixed in place */}
+      <div className="relative" ref={containerRef}>
         <Tabs.Root
           value={activeTab}
           onValueChange={setActiveTab}
           className="bg-[#252727] border border-solid border-[#323232] flex flex-col items-start p-[10px] rounded-[32px]"
         >
           <Tabs.List className="flex items-start gap-[10px]" aria-label="Navigation">
-            {tabs.map((tab, index) => (
+            {tabs.map((tab) => (
               <Tabs.Tab
                 key={tab.id}
                 value={tab.id}
-                ref={tab.id === 'menu' ? menuButtonRef : null}
                 className="cursor-pointer outline-none border-none bg-transparent p-0"
                 aria-label={tab.label}
                 onMouseEnter={() => setHoveredTab(tab.id)}
@@ -269,34 +251,14 @@ const TabBar = () => {
           ))}
         </Tabs.Root>
 
-        {/* Cyan Circle Animation */}
+        {/* Menu Flyout - Appears ABOVE the tab bar */}
         <AnimatePresence>
-          {showCircle && (
-            <motion.div
-              className="absolute pointer-events-none"
-              style={{
-                width: '45px',
-                height: '45px',
-                borderRadius: '50%',
-                backgroundColor: 'rgb(34, 211, 238)', // cyan-400
-                left: '50%',
-                bottom: '10px',
-                x: '-50%',
-              }}
-              initial={{ opacity: isMenuOpen ? 0.8 : 1, scale: isMenuOpen ? 1 : 0.5 }}
-              animate={{ opacity: 0, scale: isMenuOpen ? 1.2 : 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ 
-                duration: isMenuOpen ? 0.2 : 0.3,
-                ease: [0.4, 0, 0.2, 1]
-              }}
+          {isMenuOpen && (
+            <MenuFlyout 
+              hoveredItem={hoveredItem} 
+              setHoveredItem={setHoveredItem} 
             />
           )}
-        </AnimatePresence>
-
-        {/* Menu Flyout */}
-        <AnimatePresence>
-          {isMenuOpen && <MenuFlyout />}
         </AnimatePresence>
       </div>
 
