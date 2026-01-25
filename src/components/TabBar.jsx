@@ -2,43 +2,99 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs } from '@base-ui/react/tabs';
 
-// Figma icon assets
-const icons = {
-  home: "http://localhost:3845/assets/d9badfdbf6657ff33e4601d0318f1254e8e54960.svg",
-  move: "http://localhost:3845/assets/b3cf686c21253dc7bf542320a1274cd14071bc59.svg",
-  activity: "http://localhost:3845/assets/f5767cbadedabf4dc5d49c5b8811096395781d49.svg",
-  menu: "http://localhost:3845/assets/310ef49d7f55285275ee8a7cca975a52b0ea5b88.svg",
-  search: "http://localhost:3845/assets/08eb0e9e9a8f2389d6b8634041207ee5bee6b2e3.svg",
-  appPurple: "http://localhost:3845/assets/4ab9e84f28ab0bc6674da7bcdc02bb2fbbade177.svg",
-  appRed: "http://localhost:3845/assets/2c42177bb82506a0279088c8942beb275a73f3f8.svg",
-  appGreen: "http://localhost:3845/assets/0dde42d52eae2836f2b0aef6f242056e24eec0c2.svg",
-  // Menu item icons
-  menuHome: "http://localhost:3845/assets/f83aff5bc1bcd1c4b3ebd783de6e29429cbb3119.svg",
-  menuMove: "http://localhost:3845/assets/46c10889637ee6925d3b4f5a0e47197a8ab04278.svg",
-  menuActivity: "http://localhost:3845/assets/5542a17e5903f25c041f1f4acc4da25c9c54a538.svg",
-  menuPortfolio: "http://localhost:3845/assets/dcadea65c503acbd76b86e7811860bd3d13924b0.svg",
-  menuDocuments: "http://localhost:3845/assets/11c0ee17d50c5c62e18c9658602b5d2f05748485.svg",
-};
+// Inline SVG Icons based on Figma designs
+const HomeIcon = ({ className = "size-4" }) => (
+  <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 6.5L8 2L14 6.5V13C14 13.5523 13.5523 14 13 14H3C2.44772 14 2 13.5523 2 13V6.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M6 14V9H10V14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
-// Tab configuration
+const MoveIcon = ({ className = "size-4" }) => (
+  <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 10L2 8L4 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 6L14 8L12 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M2 8H7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M9 8H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+const ActivityIcon = ({ className = "size-4" }) => (
+  <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/>
+    <path d="M8 4V8L10.5 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const MenuIcon = ({ className = "size-4" }) => (
+  <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 4H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M2 8H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M2 12H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+const SearchIcon = ({ className = "size-4" }) => (
+  <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
+    <path d="M10.5 10.5L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+const PortfolioIcon = ({ className = "size-4" }) => (
+  <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="4" width="12" height="10" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+    <path d="M5 4V3C5 2.44772 5.44772 2 6 2H10C10.5523 2 11 2.44772 11 3V4" stroke="currentColor" strokeWidth="1.5"/>
+  </svg>
+);
+
+const DocumentsIcon = ({ className = "size-4" }) => (
+  <svg className={className} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 2H9L12 5V14H4V2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+    <path d="M9 2V5H12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+  </svg>
+);
+
+// App brand icons
+const TwitchIcon = ({ className = "size-3.5" }) => (
+  <svg className={className} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 1L1 4V12H4V14H6L8 12H11L14 9V1H2ZM12 8L10 10H7L5 12V10H3V3H12V8Z" fill="white"/>
+    <path d="M10 5H11V8H10V5ZM7 5H8V8H7V5Z" fill="white"/>
+  </svg>
+);
+
+const YouTubeIcon = ({ className = "size-3.5" }) => (
+  <svg className={className} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13.5 4.5C13.5 4.5 13.5 3 12.5 2.5C11.5 2 7 2 7 2C7 2 2.5 2 1.5 2.5C0.5 3 0.5 4.5 0.5 4.5C0.5 4.5 0.5 7 0.5 9.5C0.5 9.5 0.5 11 1.5 11.5C2.5 12 7 12 7 12C7 12 11.5 12 12.5 11.5C13.5 11 13.5 9.5 13.5 9.5V4.5Z" fill="white"/>
+    <path d="M5.5 9L9 7L5.5 5V9Z" fill="#EE0000"/>
+  </svg>
+);
+
+const SpotifyIcon = ({ className = "size-3.5" }) => (
+  <svg className={className} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7 1C3.7 1 1 3.7 1 7C1 10.3 3.7 13 7 13C10.3 13 13 10.3 13 7C13 3.7 10.3 1 7 1ZM9.8 9.8C9.6 10 9.3 10 9.1 9.8C7.5 8.8 5.5 8.6 3.5 9.1C3.2 9.2 3 9 2.9 8.7C2.8 8.4 3 8.2 3.3 8.1C5.5 7.6 7.8 7.8 9.6 9C9.9 9.2 9.9 9.5 9.8 9.8ZM10.5 8.2C10.3 8.5 10 8.5 9.7 8.3C7.9 7.2 5.2 6.9 3.3 7.5C3 7.6 2.6 7.4 2.5 7.1C2.4 6.8 2.6 6.4 2.9 6.3C5.1 5.6 8.1 6 10.2 7.3C10.5 7.4 10.6 7.9 10.5 8.2ZM10.6 6.5C8.5 5.3 5.1 5.1 3 5.8C2.6 5.9 2.2 5.7 2.1 5.3C2 4.9 2.2 4.5 2.6 4.4C5.1 3.6 8.8 3.8 11.3 5.2C11.7 5.4 11.8 5.9 11.6 6.2C11.4 6.5 10.9 6.6 10.6 6.5Z" fill="white"/>
+  </svg>
+);
+
+// Tab configuration with icon components
 const tabs = [
-  { id: 'home', icon: icons.home, label: 'Home' },
-  { id: 'move', icon: icons.move, label: 'Move' },
-  { id: 'activity', icon: icons.activity, label: 'Activity' },
-  { id: 'menu', icon: icons.menu, label: 'Menu' },
+  { id: 'home', Icon: HomeIcon, label: 'Home' },
+  { id: 'move', Icon: MoveIcon, label: 'Move' },
+  { id: 'activity', Icon: ActivityIcon, label: 'Activity' },
+  { id: 'menu', Icon: MenuIcon, label: 'Menu' },
 ];
 
 // Menu items for flyout
 const menuItems = [
-  { id: 'home', label: 'Home', icon: icons.menuHome, shortcut: 'H' },
-  { id: 'move', label: 'Move', icon: icons.menuMove, shortcut: 'M' },
-  { id: 'activity', label: 'Activity', icon: icons.menuActivity, shortcut: 'A' },
-  { id: 'portfolio', label: 'Portfolio', icon: icons.menuPortfolio },
-  { id: 'documents', label: 'Documents', icon: icons.menuDocuments },
+  { id: 'home', label: 'Home', Icon: HomeIcon, shortcut: 'H' },
+  { id: 'move', label: 'Move', Icon: MoveIcon, shortcut: 'M' },
+  { id: 'activity', label: 'Activity', Icon: ActivityIcon, shortcut: 'A' },
+  { id: 'portfolio', label: 'Portfolio', Icon: PortfolioIcon },
+  { id: 'documents', label: 'Documents', Icon: DocumentsIcon },
 ];
 
-// Tab Button Component
-const TabButton = ({ icon, label, isHovered = false }) => {
+// Tab Button Component - uses Icon component instead of img
+const TabButton = ({ Icon, label, isHovered = false }) => {
   return (
     <div 
       className={`
@@ -47,110 +103,79 @@ const TabButton = ({ icon, label, isHovered = false }) => {
         ${isHovered ? 'bg-[#323232]' : ''}
       `}
     >
-      <div className="relative shrink-0 size-[16px]">
-        <img alt={label} className="block max-w-none size-full" src={icon} />
+      <div className="relative shrink-0 size-[16px] text-[#e4e4e4]">
+        <Icon className="size-full" />
       </div>
     </div>
   );
 };
 
-// App Icon Component
-const AppIcon = ({ icon, bgColor, marginLeft = 0 }) => {
+// App Icon Component - 14x14 icon inside 24x24 container per Figma
+const AppIcon = ({ Icon, bgColor, marginLeft = 0 }) => {
   return (
     <div 
-      className="content-stretch flex items-center justify-center p-[5.143px] relative rounded-[12px] size-[24px] border-[1px] border-solid border-[#232525] col-start-1 row-start-1 mt-0"
+      className="content-stretch flex items-center justify-center p-[5.143px] relative rounded-[12px] size-[24px] border-[0.857px] border-solid border-[#232525] col-start-1 row-start-1 mt-0"
       style={{ 
         backgroundColor: bgColor,
         marginLeft: `${marginLeft}px`,
       }}
     >
-      <div className="relative shrink-0 size-[12px]">
-        <img alt="" className="block max-w-none size-full" src={icon} />
+      <div className="relative shrink-0 size-[14px] text-white">
+        <Icon className="size-full" />
       </div>
     </div>
   );
 };
 
-// Menu Flyout Component
+// Menu Flyout Component - positioned above tab bar, no scale to prevent jumping
 const MenuFlyout = ({ hoveredItem, setHoveredItem }) => {
   return (
     <motion.div
-      className="absolute bottom-full left-1/2 mb-3 bg-[#252727] border border-solid border-[#323232] p-[12px] rounded-[16px]"
-      style={{ x: '-50%' }}
+      className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[16px] bg-[#252727] border border-solid border-[#323232] p-[12px] rounded-[16px]"
       initial={{ 
         opacity: 0, 
-        y: 20,
-        scale: 0.95,
+        y: 8,
       }}
       animate={{ 
         opacity: 1, 
         y: 0,
-        scale: 1,
       }}
       exit={{ 
         opacity: 0, 
-        y: 10,
-        scale: 0.98,
+        y: 8,
       }}
       transition={{
-        type: "spring",
-        stiffness: 500,
-        damping: 30,
-        mass: 0.8,
+        duration: 0.2,
+        ease: [0.16, 1, 0.3, 1],
       }}
     >
-      <motion.div 
-        className="flex flex-col gap-[4px]"
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        variants={{
-          visible: {
-            transition: {
-              staggerChildren: 0.035,
-              delayChildren: 0.05,
-            }
-          },
-          hidden: {
-            transition: {
-              staggerChildren: 0.02,
-              staggerDirection: -1,
-            }
-          }
-        }}
-      >
-        {menuItems.map((item) => (
+      <div className="flex flex-col gap-[4px]">
+        {menuItems.map((item, index) => (
           <motion.div
             key={item.id}
-            variants={{
-              hidden: { opacity: 0, x: -12, scale: 0.95 },
-              visible: { 
-                opacity: 1, 
-                x: 0, 
-                scale: 1,
-                transition: {
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                }
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ 
+              opacity: 1, 
+              y: 0,
+              transition: {
+                duration: 0.15,
+                delay: index * 0.03,
+                ease: [0.16, 1, 0.3, 1],
               }
             }}
-            className={`flex items-center justify-between rounded-[6px] w-[216px] cursor-pointer transition-colors duration-150 ${
-              hoveredItem === item.id 
-                ? 'bg-[#2f2f2f] px-[12px] py-[8px]' 
-                : 'px-[12px] py-[8px]'
+            exit={{ 
+              opacity: 0,
+              transition: { duration: 0.1 }
+            }}
+            className={`flex items-center justify-between rounded-[6px] w-[216px] cursor-pointer transition-colors duration-150 px-[12px] py-[8px] ${
+              hoveredItem === item.id ? 'bg-[#2f2f2f]' : ''
             }`}
             onMouseEnter={() => setHoveredItem(item.id)}
             onMouseLeave={() => setHoveredItem(null)}
-            whileHover={{ 
-              x: 4,
-              transition: { type: "spring", stiffness: 400, damping: 25 }
-            }}
-            whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center gap-[4px]">
-              <div className="relative shrink-0 size-[16px]">
-                <img alt="" className="block max-w-none size-full" src={item.icon} />
+              <div className="relative shrink-0 size-[16px] text-[#e4e4e4]">
+                <item.Icon className="size-full" />
               </div>
               <p className="text-white text-[12px] leading-normal font-['IBM_Plex_Mono',sans-serif]">
                 {item.label}
@@ -165,7 +190,7 @@ const MenuFlyout = ({ hoveredItem, setHoveredItem }) => {
             )}
           </motion.div>
         ))}
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
@@ -206,9 +231,9 @@ const TabBar = () => {
       <div className="bg-[#252727] border border-solid border-[#323232] content-stretch flex flex-col items-start p-[10px] relative rounded-[32px]">
         <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
           <div className="inline-grid grid-cols-[max-content] grid-rows-[max-content] items-start justify-items-start leading-[0] relative shrink-0">
-            <AppIcon icon={icons.appPurple} bgColor="#7829df" marginLeft={0} />
-            <AppIcon icon={icons.appRed} bgColor="#e00" marginLeft={13.71} />
-            <AppIcon icon={icons.appGreen} bgColor="#10982b" marginLeft={27.43} />
+            <AppIcon Icon={TwitchIcon} bgColor="#7829df" marginLeft={0} />
+            <AppIcon Icon={YouTubeIcon} bgColor="#e00" marginLeft={13.71} />
+            <AppIcon Icon={SpotifyIcon} bgColor="#10982b" marginLeft={27.43} />
           </div>
           <p className="text-[#e4e4e4] text-[12px] leading-normal shrink-0">
             3+ Apps
@@ -235,7 +260,7 @@ const TabBar = () => {
                 onClick={() => handleTabClick(tab.id)}
               >
                 <TabButton 
-                  icon={tab.icon} 
+                  Icon={tab.Icon} 
                   label={tab.label}
                   isHovered={hoveredTab === tab.id || (tab.id === 'menu' && isMenuOpen)}
                 />
@@ -268,7 +293,7 @@ const TabBar = () => {
           className="cursor-pointer border-none bg-transparent p-0"
           aria-label="Search"
         >
-          <TabButton icon={icons.search} label="Search" />
+          <TabButton Icon={SearchIcon} label="Search" />
         </button>
       </div>
     </div>
